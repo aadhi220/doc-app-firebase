@@ -1,7 +1,7 @@
 import { Routes,Route } from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home';
-import Auth from './pages/Auth';
+import Auth from './pages/Auth/Auth';
 import DocEditor from './pages/DocEditor';
 
 function App() {
@@ -9,6 +9,7 @@ function App() {
     <div className="App">
     <Routes>
       <Route path={'/'} element={<Auth/>} />
+      <Route path={'/register'} element={<Auth register/>} />
       <Route path={'/home'} element={<Home/>} />
       <Route path={'/docName'} element={<DocEditor/>} />
       
