@@ -29,11 +29,7 @@ export default function Auth({ register }) {
               <i class="fa-solid fa-lock text-[4rem]"></i>
             </div>
 
-            <h1 className="text-3xl">
-              
-              {register ? "Sign Up" : "Sign in"}
-              
-              </h1>
+            <h1 className="text-3xl">{register ? "Sign Up" : "Sign in"}</h1>
           </div>
           <form className="w-full h-full flex flex-col " action="">
             <div className="flex flex-col gap-[1rem]">

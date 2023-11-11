@@ -3,7 +3,6 @@ import './App.css';
 import Home from './pages/Home';
 import Auth from './pages/Auth/Auth';
 import DocEditor from './pages/DocEditor';
-
 function App() {
   return (
     <div className="App">
@@ -12,7 +11,7 @@ function App() {
       <Route path={'/register'} element={<Auth register/>} />
       <Route path={'/home'} element={<Home/>} />
       <Route path={'/docName'} element={<DocEditor/>} />
-      
+     
     </Routes>
     </div>
   );

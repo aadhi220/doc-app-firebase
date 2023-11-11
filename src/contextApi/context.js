@@ -1,8 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile } from "firebase/auth";
-import { useNavigate } from 'react-router-dom';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import Quill from "quill";
+
+import "quill/dist/quill.snow.css";
 const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
@@ -14,19 +21,17 @@ const AppProvider = ({ children }) => {
   //authentication
   const signIn = (e) => {
     e.preventDefault();
-    if(email==="" || password==="") {
-     
-
-    }else {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log(userCredential);
-        navigate('/home')
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("incorrect cretentials")
-      });
+    if (email === "" || password === "") {
+    } else {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          console.log(userCredential);
+          navigate("/home");
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("incorrect cretentials");
+        });
     }
   };
   const signUp = (e) => {
@@ -39,10 +44,9 @@ const AppProvider = ({ children }) => {
         })
           .then(() => {
             console.log("User profile updated successfully");
-            setEmail("")
-            setPassword("")
-            navigate('/');
-
+            setEmail("");
+            setPassword("");
+            navigate("/");
           })
           .catch((error) => {
             console.log("Error updating user profile:", error);
@@ -73,7 +77,7 @@ const AppProvider = ({ children }) => {
     signOut(auth)
       .then(() => {
         console.log("signout");
-        navigate('/')
+        navigate("/");
       })
       .catch((error) => {
         console.log(error);
@@ -84,6 +88,28 @@ const AppProvider = ({ children }) => {
 
   //authentication end
 
+  //quill
+  const TOOLBAR_OPTIONS = [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ font: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["bold", "italic", "underline"],
+    [{ color: [] }, { background: [] }],
+    [{ script: "sub" }, { script: "super" }],
+    [{ align: [] }],
+    ["image", "blockquote", "code-block"],
+    ["clean"],
+  ];
+
+  const wrapperRef = useCallback((wrapper) => {
+    if (wrapper === null) return;
+    wrapper.innerHTML = "";
+    const editor = document.createElement("div");
+    wrapper.append(editor);
+    new Quill(editor, { theme: "snow", modules: { toolbar: TOOLBAR_OPTIONS } });
+  }, []);
+
+  //quill end
   return (
     <AppContext.Provider
       value={{
@@ -99,6 +125,7 @@ const AppProvider = ({ children }) => {
         signIn,
         userSignOut,
         signUp,
+        wrapperRef
       }}
     >
       {children}
@@ -106,7 +133,7 @@ const AppProvider = ({ children }) => {
   );
 };
 
-export  const useGlobalContext = () => {
+export const useGlobalContext = () => {
   return useContext(AppContext);
 };
 
