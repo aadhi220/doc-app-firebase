@@ -60,10 +60,15 @@ export default function Header() {
         <Box sx={{ flexGrow: 0 }}>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar
+            {authUser.photoURL?  <Avatar
                 alt="Remy Sharp"
-                src="https://static.vecteezy.com/system/resources/thumbnails/019/900/322/small/happy-young-cute-illustration-face-profile-png.png"
-              />
+                src={authUser.photoURL}
+              /> :
+              <Avatar
+              alt="Remy Sharp"
+              src="https://static.vecteezy.com/system/resources/thumbnails/019/900/322/small/happy-young-cute-illustration-face-profile-png.png"
+            />
+              }
             </IconButton>
           </Tooltip>
           <Menu

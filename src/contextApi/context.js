@@ -1,42 +1,63 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+
 import { auth } from "../firebase";
 import {
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithPopup,
   updateProfile,
+  signOut,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Quill from "quill";
 
 import "quill/dist/quill.snow.css";
 const AppContext = React.createContext();
+const provider = new GoogleAuthProvider();
+export function useAuth() {
+  // console.log(useContext(AuthContext))
+  return useContext(AppContext);
+}
 const AppProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [showPassword, setShowPassword] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [docTitle,setDocTitle]=useState()
   const navigate = useNavigate();
   //authentication
-  const signIn = (e) => {
+  const signIn = async (e) => {
+setLoading(true)
     e.preventDefault();
     if (email === "" || password === "") {
+      setLoading(false)
+      //plz fill 
     } else {
-      signInWithEmailAndPassword(auth, email, password)
+     await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           console.log(userCredential);
-          navigate("/home");
+
+          navigate("/");
+          setLoading(false)
         })
         .catch((error) => {
           console.log(error);
           alert("incorrect cretentials");
+          setLoading(false)
         });
     }
   };
-  const signUp = (e) => {
+  const signUp =async (e) => {
+    setLoading(true)
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
+    if(email==="" || password ==="" || username==="") {
+      setLoading(false)
+    }else {
+      await createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Update display name (username) for the user
         updateProfile(userCredential.user, {
@@ -47,22 +68,36 @@ const AppProvider = ({ children }) => {
             setEmail("");
             setPassword("");
             navigate("/");
+            setLoading(false)
           })
           .catch((error) => {
             console.log("Error updating user profile:", error);
+            alert("error updating name")
+            setLoading(false)
+
           });
 
         console.log(userCredential);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false)
       });
+    }
   };
+  const googleSignUp =async () => {
+    setLoading(true)
+    setLoading(false)
+    return signInWithPopup(auth,provider);
+    
+  }
+
 
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
       if (user) {
         setAuthUser(user);
+       
       } else {
         setAuthUser(null);
       }
@@ -110,10 +145,15 @@ const AppProvider = ({ children }) => {
   }, []);
 
   //quill end
+
+  //try
+
   return (
     <AppContext.Provider
       value={{
+        //auth
         authUser,
+        googleSignUp,
         showPassword,
         setShowPassword,
         username,
@@ -125,10 +165,19 @@ const AppProvider = ({ children }) => {
         signIn,
         userSignOut,
         signUp,
-        wrapperRef
+        loading,setLoading,
+
+        //auth end
+        //quill
+        wrapperRef,
+        setDocTitle,
+        docTitle
+
+
+
       }}
     >
-      {children}
+      { children}
     </AppContext.Provider>
   );
 };

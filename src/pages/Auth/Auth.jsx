@@ -4,6 +4,7 @@ import { TextField, FormControlLabel, Checkbox, Button } from "@mui/material";
 import "./Auth.min.css";
 import { Link } from "react-router-dom";
 import { useGlobalContext } from "../../contextApi/context";
+import GsignUp from "../../components/GsignUp"
 export default function Auth({ register }) {
   const {
     username,
@@ -106,7 +107,17 @@ export default function Auth({ register }) {
                 </Link>
               </p>
             )}
+          
+          {!register && 
+           <>
+              <hr className="mt-1 mb-1"/>
+              <h6 className="text-center text-gray-400 text-[.7rem]">OR</h6>
+              <hr className="mt-1 mb-2"/>
+            
+            <GsignUp/>
+           </>}
           </form>
+          
         </Paper>
       </div>
     </>
