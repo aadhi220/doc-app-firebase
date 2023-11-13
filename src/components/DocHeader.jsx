@@ -14,6 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../firebase";
 import { updateDoc, doc, getDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 function DocHeader() {
   const param = useParams();
   const navigate = useNavigate();
@@ -27,7 +28,10 @@ function DocHeader() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+const handleDev=()=> {
+  handleClose();
+  toast.warning("feature under develeopment")
+}
   useEffect(() => {
     // console.log("Mounted");
     const getData = async () => {
@@ -103,7 +107,7 @@ function DocHeader() {
             >
               {/* <MenuItem onClick={()=>createHandler()}>new Document</MenuItem> */}
               <MenuItem onClick={() => HandleSave()}>save</MenuItem>
-              <MenuItem onClick={handleClose}>save as pdf</MenuItem>
+              <MenuItem onClick={handleClose}><span className="line-through">save as pdf</span></MenuItem>
             </Menu>
             <p className="px-2 py-0.5 hover:bg-gray-200 rounded-md text-sm">
               Edit
