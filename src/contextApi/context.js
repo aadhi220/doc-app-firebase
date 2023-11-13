@@ -11,23 +11,27 @@ import {
   signOut,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import Quill from "quill";
-
-import "quill/dist/quill.snow.css";
+import { addDoc, collection, deleteDoc, serverTimestamp} from "firebase/firestore";
+import { getDocs,orderBy, query,doc} from "firebase/firestore";
+import { db } from "../firebase";
 const AppContext = React.createContext();
 const provider = new GoogleAuthProvider();
+
 export function useAuth() {
   // console.log(useContext(AuthContext))
+
   return useContext(AppContext);
 }
 const AppProvider = ({ children }) => {
+
   const [authUser, setAuthUser] = useState(null);
   const [showPassword, setShowPassword] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
-  const [docTitle,setDocTitle]=useState()
+  // const [docTitle,setDocTitle]=useState("")
+  const [docData, setDocData] = useState({});
   const navigate = useNavigate();
   //authentication
   const signIn = async (e) => {
@@ -77,7 +81,7 @@ setLoading(true)
 
           });
 
-        console.log(userCredential);
+        // console.log(userCredential);
       })
       .catch((error) => {
         console.log(error);
@@ -119,34 +123,73 @@ setLoading(true)
       });
   };
 
-  console.log(authUser);
+
 
   //authentication end
 
   //quill
-  const TOOLBAR_OPTIONS = [
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    [{ font: [] }],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["bold", "italic", "underline"],
-    [{ color: [] }, { background: [] }],
-    [{ script: "sub" }, { script: "super" }],
-    [{ align: [] }],
-    ["image", "blockquote", "code-block"],
-    ["clean"],
-  ];
 
-  const wrapperRef = useCallback((wrapper) => {
-    if (wrapper === null) return;
-    wrapper.innerHTML = "";
-    const editor = document.createElement("div");
-    wrapper.append(editor);
-    new Quill(editor, { theme: "snow", modules: { toolbar: TOOLBAR_OPTIONS } });
-  }, []);
+
 
   //quill end
 
-  //try
+  //new doc
+
+  // console.log("oyi ",authUser);
+
+
+
+
+  const createHandler = async () => {
+    
+  const colRef = collection(db, "UserDocData", authUser.uid, "docs");
+    const querySnapShot = await addDoc(colRef, {
+      title: "Untitled",
+      content: "",
+      createdOn: serverTimestamp(),
+    });
+    
+    navigate(`/edit/${querySnapShot.id}`);
+  };
+
+  //docheader
+  const HandleSave =()=> {
+    navigate('/')
+  }
+
+
+
+  const [userDocs, setUserDocs] = useState();
+  const getUserDocs = async () => {
+    const docCollectionRef = query(collection(db,"UserDocData",authUser.uid,'docs'))
+const querySnapShot = await getDocs(
+docCollectionRef
+);
+const udocs = querySnapShot.docs.map((doc) => ({
+id: doc.id,
+...doc.data(),
+}));
+// console.log(udocs);
+setUserDocs(udocs);
+// console.log("userdoc",udocs);
+};
+
+const handleDelete = async (docId) => {
+  // Display a confirmation dialog
+  const userConfirmed = window.confirm('Are you sure you want to delete this document?');
+
+  if (userConfirmed) {
+    try {
+      // Delete the document
+      await deleteDoc(doc(db, "UserDocData", authUser.uid, "docs", docId));
+
+      // Refresh the user's documents after deletion
+      getUserDocs();
+    } catch (error) {
+      console.error('Error deleting document: ', error);
+    }
+  }
+};
 
   return (
     <AppContext.Provider
@@ -169,9 +212,18 @@ setLoading(true)
 
         //auth end
         //quill
-        wrapperRef,
-        setDocTitle,
-        docTitle
+   
+        // setDocTitle,
+        // docTitle,
+        createHandler,
+        HandleSave,
+        userDocs,
+        getUserDocs,
+        docData,
+        setDocData,
+        handleDelete
+
+        
 
 
 
