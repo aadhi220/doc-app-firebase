@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/logo.png";
 import StarOutlineOutlinedIcon from "@mui/icons-material/StarOutlineOutlined";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
@@ -13,10 +13,10 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../firebase";
-import { updateDoc, doc,getDoc } from "firebase/firestore";
+import { updateDoc, doc, getDoc } from "firebase/firestore";
 function DocHeader() {
   const param = useParams();
-const navigate =useNavigate();
+  const navigate = useNavigate();
   const { HandleSave, authUser } = useGlobalContext();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [tempTitle, setTempTitle] = useState();
@@ -38,7 +38,7 @@ const navigate =useNavigate();
         if (querySnapShot.exists() === false) {
           navigate("/");
         }
-        
+
         setTempTitle(querySnapShot.data().title);
       } catch {
         console.log("unautherised access");
@@ -47,7 +47,6 @@ const navigate =useNavigate();
     getData();
   }, []);
 
-  
   const handlerTitleChange = async (newTitle) => {
     setTempTitle(newTitle);
     console.log("title", newTitle, param.id);

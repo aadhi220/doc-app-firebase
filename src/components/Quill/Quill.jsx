@@ -5,15 +5,15 @@ import { db } from "../../firebase";
 import { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import EditorToolbar, { modules, formats } from "../QuillToolBar";
-import 'react-quill/dist/quill.snow.css';
+import "react-quill/dist/quill.snow.css";
 import "./Quill.min.css";
 export default function TextEditor() {
   const [value, setValue] = useState("");
- 
+
   const navigate = useNavigate();
   const param = useParams();
   // console.log("docid", param.id);
-  const {  authUser, docTitle ,setDocData} = useGlobalContext();
+  const { authUser, setDocData } = useGlobalContext();
 
   useEffect(() => {
     // console.log("Mounted");
@@ -36,12 +36,9 @@ export default function TextEditor() {
   const handlerEditorChange = (newContent) => {
     setValue(newContent);
     updateDoc(doc(db, "UserDocData", authUser.uid, "docs", param.id), {
-      "content": value,
-     
-      
+      content: value,
     });
   };
-
 
   // console.log(value);
   return (

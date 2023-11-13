@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { Paper } from "@mui/material";
 import MicroDisplay from "./MicroDisplay";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 export default function DocList() {
   const navigate = useNavigate();
 
-  const { getUserDocs, userDocs ,handleDelete} = useGlobalContext();
+  const { getUserDocs, userDocs, handleDelete } = useGlobalContext();
 
   useEffect(() => {
     getUserDocs();
@@ -18,14 +18,13 @@ export default function DocList() {
     <div className="flex flex-wrap gap-4 w-full h-full place-content-center sm:place-content-start py-3">
       {userDocs ? (
         userDocs.map((doc) => (
-          <Paper
-            className="w-[12rem] h-[15rem] overflow-hidden"
-            key={doc.id}
-           
-          >
-            <div  onClick={() => {
-              navigate(`/edit/${doc.id}`);
-            }} className=" ">
+          <Paper className="w-[12rem] h-[15rem] overflow-hidden" key={doc.id}>
+            <div
+              onClick={() => {
+                navigate(`/edit/${doc.id}`);
+              }}
+              className=" "
+            >
               {" "}
               <MicroDisplay htmlContent={doc.content} />
             </div>
@@ -44,7 +43,13 @@ export default function DocList() {
                     year: "numeric",
                   })}
                 </span>
-               <button className="ms-4 rounded-full  hover:bg-gray-200" onClick={()=>handleDelete(doc.id)} > <DeleteForeverIcon fontSize="small"/></button>
+                <button
+                  className="ms-4 rounded-full  hover:bg-gray-200"
+                  onClick={() => handleDelete(doc.id)}
+                >
+                  {" "}
+                  <DeleteForeverIcon fontSize="small" />
+                </button>
               </div>
             </div>
           </Paper>

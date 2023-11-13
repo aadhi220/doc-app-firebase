@@ -21,7 +21,7 @@
     height: 10rem;
     display: flex;
     justify-content: flex-start;
-    align-items: start;
+    align-items: flex-start;
     border: none;
 }
 .micro-display-container .ql-container.ql-snow {
@@ -29,7 +29,7 @@
     height: fit-content;
     display: flex;
     justify-content: center;
-    align-items: start;
+    align-items: flex-start;
     margin-bottom: 4rem;
     border: none;
 }
@@ -37,7 +37,7 @@
 .micro-display-container {
     display: flex;
     justify-content: flex-start;
-    align-items: start;
+    align-items: flex-start;
     box-sizing: border-box;
     border: none;
 }

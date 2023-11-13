@@ -1,10 +1,9 @@
-import React from "react";
 import addbtn from "./addbtn.png";
 import { Paper } from "@mui/material";
 import { useGlobalContext } from "../contextApi/context";
 
 export default function NewDoc() {
-const {createHandler}= useGlobalContext();
+  const { createHandler } = useGlobalContext();
   return (
     <>
       <Paper
@@ -14,6 +13,5 @@ const {createHandler}= useGlobalContext();
         <img className="w-full" src={addbtn} alt="" />
       </Paper>
     </>
-    
   );
 }

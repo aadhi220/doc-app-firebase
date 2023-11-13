@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Auth from './pages/Auth/Auth';
 import DocEditor from './pages/DocEditor';
 import ProtectedRoute from './components/ProtectedRoute';
+
 function App() {
   return (
     <div className="App">

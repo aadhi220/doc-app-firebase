@@ -1,16 +1,18 @@
 import React from 'react'
-import { useGlobalContext } from '../contextApi/context'
 import Header from '../components/Header'
 import NewDoc from '../components/NewDoc'
 import DocList from '../components/DocList'
+import { LinearProgress } from '@mui/material'
+import { useGlobalContext } from '../contextApi/context'
 
 
 
 
 export default function Home() {
-
+const {loading}=useGlobalContext();
   return (
     <>
+      <div className="">   {loading &&  <LinearProgress  />}</div>
 <Header/>
 
 <section className="w-full min-h-[43vh] bg-[#f1f3f4] flex place-content-center place-items-center ">
