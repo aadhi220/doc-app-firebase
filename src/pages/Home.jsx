@@ -11,8 +11,8 @@ import { useGlobalContext } from '../contextApi/context'
 export default function Home() {
 const {loading}=useGlobalContext();
   return (
-    <>
-      <div className="">   {loading &&  <LinearProgress  />}</div>
+    <div className='relative w-full h-full'>
+    <div className="absolute w-full  top-0 z-[99] ">   {loading &&  <LinearProgress  />}</div>
 <Header/>
 
 <section className="w-full min-h-[43vh] bg-[#f1f3f4] flex place-content-center place-items-center ">
@@ -37,6 +37,6 @@ const {loading}=useGlobalContext();
 </section>
 
     
-    </>
+    </div>
   )
 }

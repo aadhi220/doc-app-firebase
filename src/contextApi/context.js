@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import { auth } from "../firebase";
-import {  toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 import {
   GoogleAuthProvider,
@@ -24,34 +24,36 @@ import { db } from "../firebase";
 const AppContext = React.createContext();
 const provider = new GoogleAuthProvider();
 
-
 export function useAuth() {
   // console.log(useContext(AuthContext))
 
   return useContext(AppContext);
 }
 const AppProvider = ({ children }) => {
-  const [authUser, setAuthUser] = useState(null);
+  // const [authUser, setAuthUser] = useState(null);
+  const authUser = JSON.parse(sessionStorage.getItem("user"))
+  // console.log(authUser);
   const [showPassword, setShowPassword] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("miles@gmail.com");
+  const [password, setPassword] = useState("mile1234");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [docData, setDocData] = useState({});
+
   const navigate = useNavigate();
   //authentication
   const signIn = async (e) => {
     setLoading(true);
     e.preventDefault();
     if (email === "" || password === "") {
-      toast.warning("please fill the details")
+      toast.warning("please fill the details");
       setLoading(false);
 
       //plz fill
     } else {
       await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          console.log(userCredential);
+          // console.log(userCredential);
 
           navigate("/");
           setLoading(false);
@@ -67,7 +69,7 @@ const AppProvider = ({ children }) => {
     setLoading(true);
     e.preventDefault();
     if (email === "" || password === "" || username === "") {
-      toast.warning("please fill the details")
+      toast.warning("please fill the details");
       setLoading(false);
     } else {
       await createUserWithEmailAndPassword(auth, email, password)
@@ -80,11 +82,11 @@ const AppProvider = ({ children }) => {
               setEmail("");
               setPassword("");
               navigate("/");
-              toast.success("account created successfully")
+              toast.success("account created successfully");
               setLoading(false);
             })
             .catch((error) => {
-             
+              console.log(error);
               toast.error("plz try again");
               setLoading(false);
             });
@@ -93,6 +95,7 @@ const AppProvider = ({ children }) => {
         })
         .catch((error) => {
           toast.error("plz try again");
+          console.log(error);
           setLoading(false);
         });
     }
@@ -106,9 +109,10 @@ const AppProvider = ({ children }) => {
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setAuthUser(user);
+   
+        sessionStorage.setItem("user", JSON.stringify(user));
       } else {
-        setAuthUser(null);
+        sessionStorage.clear();
       }
     });
 
@@ -121,9 +125,9 @@ const AppProvider = ({ children }) => {
     signOut(auth)
       .then(() => {
         // console.log("signout");
-        setUsername("")
-        setEmail("")
-        setPassword("")
+        // setUsername("")
+        // setEmail("")
+        // setPassword("")
         navigate("/");
       })
       .catch((error) => {
@@ -142,14 +146,14 @@ const AppProvider = ({ children }) => {
   // console.log("oyi ",authUser);
 
   const createHandler = async () => {
-    setLoading(true)
+    setLoading(true);
     const colRef = collection(db, "UserDocData", authUser.uid, "docs");
     const querySnapShot = await addDoc(colRef, {
       title: "Untitled",
       content: "",
       createdOn: serverTimestamp(),
     });
-setLoading(false)
+    setLoading(false);
     navigate(`/edit/${querySnapShot.id}`);
   };
 
@@ -159,21 +163,31 @@ setLoading(false)
   };
 
   const [userDocs, setUserDocs] = useState();
+  const [searchKey, setSearchKey] = useState("");
+
   const getUserDocs = async () => {
-    setLoading(true)
+    setLoading(true);
     const docCollectionRef = query(
-      collection(db, "UserDocData", authUser.uid, "docs"),orderBy('createdOn','desc')
+      collection(db, "UserDocData", authUser.uid, "docs"),
+      orderBy("createdOn", "desc")
     );
     const querySnapShot = await getDocs(docCollectionRef);
     const udocs = querySnapShot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
-    // console.log(udocs);
-    setUserDocs(udocs);
+
+  // Filter documents based on searchKey (title)
+  const filteredDocs = udocs.filter((doc) =>
+    doc.title.toLowerCase().includes(searchKey.toLowerCase())
+  );
+
+  setUserDocs(filteredDocs);
     // console.log("userdoc",udocs);
-    setLoading(false)
+    setLoading(false);
   };
+
+
 
   const handleDelete = async (docId) => {
     // Display a confirmation dialog
@@ -220,6 +234,8 @@ setLoading(false)
         docData,
         setDocData,
         handleDelete,
+        searchKey,
+        setSearchKey
       }}
     >
       {children}

@@ -8,12 +8,14 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 export default function DocList() {
   const navigate = useNavigate();
 
-  const { getUserDocs, userDocs, handleDelete } = useGlobalContext();
+  const { getUserDocs, userDocs, handleDelete,searchKey } = useGlobalContext();
 
   useEffect(() => {
     getUserDocs();
-  }, []);
+  },[searchKey]);
 
+
+  
   return (
     <div className="flex flex-wrap gap-4 w-full h-full place-content-center sm:place-content-start py-3">
       {userDocs ? (

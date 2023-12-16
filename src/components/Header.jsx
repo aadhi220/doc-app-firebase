@@ -21,7 +21,7 @@ export default function Header() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const { userSignOut, authUser } = useGlobalContext();
+  const { userSignOut, authUser,searchKey,setSearchKey } = useGlobalContext();
   return (
     <>
       <header className="sticky top-0 z-50  w-full h-[60px] flex  place-items-center px-4 py-2 shadow-md bg-white">
@@ -36,16 +36,18 @@ export default function Header() {
         </IconButton>
 
         <img className="w-[40px]" src={logo} alt="" />
-        <h1 className="text-xl font-medium text-gray-600">Docs</h1>
+        <h1 className="text-xl font-medium text-gray-600 hidden sm:block">Docs</h1>
 
         <div className="flex flex-grow items-center mx-5 md:mx-40 px-2 sm:px-5  bg-gray-100 rounded-md focus-within:shadow-md focus-within:bg-white ">
-          <button className="w-[35px] h-[35px] hover:bg-gray-200 rounded-full">
+          <button className="w-[35px] h-[35px] hover:bg-gray-200 rounded-full hidden sm:block">
             {" "}
-            <SearchIcon className="text-gray-500" />
+            <SearchIcon className="text-gray-500 " />
           </button>
           <input
             type="text"
             placeholder="search"
+            value={searchKey || ""}
+            onChange={(e)=>setSearchKey(e.target.value)}
             className="flex-grow  w-[40px] sm:w-full px-2 my-2 outline-none bg-transparent text-base"
           />
         </div>
